@@ -3,6 +3,7 @@ package ru.ugrinovich.RestApi.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ugrinovich.RestApi.Util.PersonNotFoundException;
 import ru.ugrinovich.RestApi.models.Person;
 import ru.ugrinovich.RestApi.repositories.PeopleRepository;
 
@@ -27,6 +28,6 @@ public class PersonService {
     public Person findOne(int id){
         Optional<Person> personOptional = peopleRepository.findById(id);
 
-        return personOptional.orElse(null);
+        return personOptional.orElseThrow(PersonNotFoundException::new);
     }
 }

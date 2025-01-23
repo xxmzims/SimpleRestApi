@@ -1,10 +1,11 @@
 package ru.ugrinovich.RestApi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.ugrinovich.RestApi.Util.PersonErrorResponse;
+import ru.ugrinovich.RestApi.Util.PersonNotFoundException;
 import ru.ugrinovich.RestApi.models.Person;
 import ru.ugrinovich.RestApi.repositories.PeopleRepository;
 import ru.ugrinovich.RestApi.services.PersonService;
@@ -31,6 +32,15 @@ public class PeopleRestController {
 
     @GetMapping("/{id}")
     public Person getPerson(@PathVariable("id") int id){
+
         return personService.findOne(id);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<PersonErrorResponse> handlerException(PersonNotFoundException e){
+        PersonErrorResponse response = new PersonErrorResponse("Person with current id is not found!", System.currentTimeMillis());
+
+        // В HTTP ответе тело ответа(response) и статус в заголовке
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
